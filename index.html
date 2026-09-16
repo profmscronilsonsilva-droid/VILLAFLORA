@@ -97,6 +97,90 @@ function openNavigationFromTestPoint(p){
 }
 </script>
 
+
+<style id="modern-villa-flora-ui">
+:root{
+  --vf-green:#21b66f; --vf-dark:#111827; --vf-muted:#667085;
+  --vf-bg:#f4f7f6; --vf-card:#ffffff; --vf-line:#e4e7ec;
+  --vf-blue:#2563eb; --vf-waze:#31c7f5;
+}
+body{background:var(--vf-bg)!important;color:var(--vf-dark)}
+header{
+  background:linear-gradient(135deg,#0d1713 0%,#14241c 55%,#183526 100%)!important;
+  border-bottom:0!important;padding:18px 22px!important;
+}
+header h1{font-size:25px!important;letter-spacing:-.4px}
+header p{opacity:.78}
+.vf-shell{max-width:1380px;margin:18px auto;padding:0 18px}
+.vf-topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:14px;flex-wrap:wrap}
+.vf-title h2{margin:0;font-size:21px}
+.vf-title p{margin:4px 0 0;color:var(--vf-muted);font-size:13px}
+.vf-origin{
+ display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--vf-line);
+ border-radius:12px;padding:10px 13px;font-size:13px;box-shadow:0 2px 8px rgba(16,24,40,.04)
+}
+.vf-origin b{color:var(--vf-green)}
+.vf-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px}
+.vf-map-card,.vf-side-card{
+ background:var(--vf-card);border:1px solid var(--vf-line);border-radius:18px;
+ box-shadow:0 8px 30px rgba(16,24,40,.07);overflow:hidden
+}
+.vf-map-card{position:relative;min-height:620px}
+.vf-map-toolbar{
+ position:absolute;z-index:30;top:14px;left:14px;right:14px;
+ display:flex;align-items:center;justify-content:space-between;gap:10px;pointer-events:none
+}
+.vf-map-toolbar>*{pointer-events:auto}
+.vf-search{background:#fff;border:1px solid var(--vf-line);border-radius:12px;padding:11px 13px;width:min(360px,65%);
+ box-shadow:0 4px 14px rgba(16,24,40,.12);outline:none}
+.vf-search:focus{border-color:var(--vf-green);box-shadow:0 0 0 3px rgba(33,182,111,.14)}
+.vf-location-btn,.vf-close{
+ border:0;border-radius:11px;padding:10px 13px;background:#fff;cursor:pointer;
+ box-shadow:0 4px 14px rgba(16,24,40,.12);font-weight:700;color:var(--vf-dark)
+}
+.vf-location-btn:hover,.vf-close:hover{transform:translateY(-1px)}
+.vf-origin-pin{
+ position:absolute;z-index:15;left:50%;top:50%;width:18px;height:18px;border-radius:50%;
+ background:#ef4444;border:4px solid #fff;box-shadow:0 0 0 7px rgba(239,68,68,.18),0 4px 12px rgba(0,0,0,.25);
+ transform:translate(-50%,-50%);display:none
+}
+.vf-route-line{position:absolute;z-index:10;pointer-events:none;display:none;height:4px;
+ transform-origin:left center;background:var(--vf-blue);border-radius:4px;box-shadow:0 1px 4px rgba(37,99,235,.35)}
+.vf-route-line:after{content:"";position:absolute;right:-5px;top:-4px;width:12px;height:12px;background:var(--vf-blue);border-radius:50%;border:2px solid #fff}
+.vf-side-card{padding:17px}
+.vf-side-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.vf-side-head h3{margin:0;font-size:17px}
+.vf-count{font-size:11px;background:#ecfdf3;color:#087443;padding:5px 8px;border-radius:999px;font-weight:800}
+.vf-selected{padding:15px;border:1px solid #d9f3e5;background:#f5fffa;border-radius:14px;margin-bottom:13px}
+.vf-selected .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#5c7a6b;font-weight:800}
+.vf-selected h3{margin:4px 0 7px;font-size:19px}
+.vf-address{font-size:12px;color:var(--vf-muted);line-height:1.45}
+.vf-main-route{
+ width:100%;border:0;border-radius:12px;padding:13px;background:var(--vf-green);color:#fff;
+ font-weight:800;font-size:14px;cursor:pointer;margin-top:12px;box-shadow:0 5px 15px rgba(33,182,111,.22)
+}
+.vf-main-route:disabled{opacity:.45;cursor:not-allowed}
+.vf-list{display:grid;gap:7px;max-height:475px;overflow:auto;padding-right:3px}
+.vf-item{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid transparent;border-radius:11px;cursor:pointer}
+.vf-item:hover{background:#f7f9f8;border-color:var(--vf-line)}
+.vf-item.active{background:#ecfdf3;border-color:#b7ebce}
+.vf-num{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#edf1ef;font-size:11px;font-weight:800}
+.vf-item.active .vf-num{background:var(--vf-green);color:#fff}
+.vf-item-text{min-width:0}.vf-item-text b{display:block;font-size:13px}.vf-item-text span{font-size:11px;color:var(--vf-muted)}
+.vf-modal{display:none;position:fixed;z-index:10000;inset:0;background:rgba(15,23,42,.58);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:18px}
+.vf-modal.show{display:flex}
+.vf-dialog{width:min(450px,100%);background:#fff;border-radius:20px;padding:21px;box-shadow:0 25px 80px rgba(0,0,0,.28)}
+.vf-dialog-head{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.vf-dialog h3{margin:0;font-size:20px}.vf-dialog p{color:var(--vf-muted);font-size:13px;margin:5px 0 18px}
+.vf-app{display:flex;align-items:center;gap:13px;width:100%;border:0;border-radius:13px;padding:14px;text-align:left;cursor:pointer;margin-top:9px}
+.vf-app strong{display:block;font-size:14px}.vf-app small{display:block;margin-top:2px;opacity:.8}
+.vf-app.google{background:#eef5ff;color:#1557b0}.vf-app.waze{background:#e9faff;color:#08728d}
+.vf-app.secondary{background:#f2f4f7;color:#344054}
+.vf-app-icon{font-size:23px;width:32px;text-align:center}
+@media(max-width:900px){.vf-grid{grid-template-columns:1fr}.vf-map-card{min-height:500px}.vf-list{max-height:280px}}
+@media(max-width:600px){.vf-shell{padding:0 10px}.vf-map-toolbar{top:9px;left:9px;right:9px}.vf-search{width:100%}.vf-location-btn{display:none}.vf-topbar{align-items:flex-start}.vf-origin{width:100%}}
+</style>
+
 </head>
 <body>
 <header>
@@ -316,18 +400,97 @@ render();
 </div>
 
 
-<div class="legend-note route-help">
-  <b>Ponto inicial de teste:</b> -23.558217, -47.479185.
-  Ao escolher <b>Como chegar</b>, o Google Maps recebe essa coordenada como origem
-  e o ponto selecionado como destino. O Waze abre a navegação para o destino.
-</div>
 
 
-<div class="legend-note">
-  <a class="btn primary" target="_blank" rel="noopener"
-     href="https://www.google.com/maps/search/?api=1&query=-23.558217,-47.479185">
-     📍 Ver ponto inicial de teste no Google Maps
-  </a>
+
+
+
+
+<script id="modern-villa-flora-js">
+let vfSelectedPlace=null;
+const VF_ORIGIN={lat:-23.558217,lng:-47.479185};
+
+function vfGoogleRoute(p, origin=VF_ORIGIN){
+  let u='https://www.google.com/maps/dir/?api=1'
+    +'&origin='+encodeURIComponent(origin.lat+','+origin.lng)
+    +'&destination='+encodeURIComponent(p.address||p.query);
+  if(p.google_place_id) u+='&destination_place_id='+encodeURIComponent(p.google_place_id);
+  return u;
+}
+function vfWazeRoute(p){
+  return 'https://www.waze.com/ul?ll='+encodeURIComponent(p.address||p.query)+'&navigate=yes';
+}
+function vfSelect(p){
+  vfSelectedPlace=p;
+  document.getElementById('vfSelectedName').textContent=p.name;
+  document.getElementById('vfSelectedAddress').textContent=p.address||p.query;
+  document.getElementById('vfRouteBtn').disabled=false;
+  document.querySelectorAll('.vf-item').forEach(el=>el.classList.toggle('active',Number(el.dataset.id)===p.id));
+  // Reuse original map marker interaction when available.
+  if(typeof showPlace==='function') try{showPlace(p)}catch(e){}
+  // Visual origin marker is a reference point; actual navigation uses exact coordinates.
+  document.getElementById('vfOriginPin').style.display='block';
+}
+function vfOpenChoice(){
+  if(!vfSelectedPlace)return;
+  document.getElementById('vfGoogleChoice').href=vfGoogleRoute(vfSelectedPlace);
+  document.getElementById('vfWazeChoice').href=vfWazeRoute(vfSelectedPlace);
+  document.getElementById('vfModal').classList.add('show');
+}
+function vfCloseChoice(){document.getElementById('vfModal').classList.remove('show')}
+function useCurrentLocation(){
+  if(!navigator.geolocation){alert('Seu navegador não oferece geolocalização.');return}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    VF_ORIGIN.lat=pos.coords.latitude; VF_ORIGIN.lng=pos.coords.longitude;
+    document.querySelector('.vf-origin span').innerHTML='<b>Origem:</b> '+VF_ORIGIN.lat.toFixed(6)+', '+VF_ORIGIN.lng.toFixed(6);
+    document.getElementById('vfOriginPin').style.display='block';
+    if(vfSelectedPlace) vfOpenChoice();
+  },()=>alert('Não foi possível obter sua localização. Verifique a permissão do navegador.'));
+}
+function vfBuildList(){
+  const list=document.getElementById('vfList');
+  if(!list||typeof places==='undefined')return;
+  list.innerHTML=places.map(p=>`
+    <div class="vf-item" data-id="${p.id}" onclick='vfSelect(places.find(x=>x.id===${p.id}))'>
+      <div class="vf-num">${p.id}</div>
+      <div class="vf-item-text"><b>${p.name}</b><span>${p.type}</span></div>
+    </div>`).join('');
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  vfBuildList();
+  const btn=document.getElementById('vfRouteBtn');
+  if(btn)btn.onclick=vfOpenChoice;
+  const search=document.getElementById('vfSearch');
+  if(search)search.addEventListener('input',()=>{
+    const term=search.value.toLowerCase().trim();
+    let visible=0;
+    document.querySelectorAll('.vf-item').forEach(el=>{
+      const p=places.find(x=>x.id===Number(el.dataset.id));
+      const ok=!term||(p.name+' '+p.type+' '+(p.address||'')).toLowerCase().includes(term);
+      el.style.display=ok?'flex':'none'; if(ok)visible++;
+    });
+    document.getElementById('vfCount').textContent=visible+' ponto'+(visible===1?'':'s');
+  });
+});
+</script>
+
+
+<div class="vf-modal" id="vfModal" onclick="if(event.target===this)vfCloseChoice()">
+  <div class="vf-dialog">
+    <div class="vf-dialog-head">
+      <div><h3>Como chegar</h3><p>Escolha o aplicativo para navegar até o ponto selecionado.</p></div>
+      <button class="vf-close" onclick="vfCloseChoice()">✕</button>
+    </div>
+    <a id="vfGoogleChoice" class="vf-app google" target="_blank" rel="noopener">
+      <span class="vf-app-icon">📍</span><span><strong>Google Maps</strong><small>Traçar rota desde a origem até o ponto</small></span>
+    </a>
+    <a id="vfWazeChoice" class="vf-app waze" target="_blank" rel="noopener">
+      <span class="vf-app-icon">🚗</span><span><strong>Waze</strong><small>Abrir navegação até o ponto</small></span>
+    </a>
+    <button class="vf-app secondary" onclick="vfCloseChoice()">
+      <span class="vf-app-icon">↩</span><span><strong>Voltar</strong><small>Escolher outro ponto</small></span>
+    </button>
+  </div>
 </div>
 
 </body>
