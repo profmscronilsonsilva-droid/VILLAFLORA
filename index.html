@@ -49,6 +49,20 @@ footer{max-width:1300px;margin:auto;padding:0 16px 22px;color:var(--muted);font-
 .pending{display:inline-block;color:#9a6700;background:#fff4ce;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
 .source-line{font-size:12px;color:var(--muted);margin-top:10px}
 .legend-note{margin-top:10px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:10px;font-size:12px;color:var(--muted)}
+
+<style>
+.nav-modal{display:none;position:fixed;z-index:9999;inset:0;background:rgba(0,0,0,.62);align-items:center;justify-content:center;padding:18px}
+.nav-modal.show{display:flex}
+.nav-box{width:min(430px,100%);background:#fff;border-radius:16px;padding:22px;box-shadow:0 15px 50px rgba(0,0,0,.3);text-align:center}
+.nav-box h3{margin:0 0 8px}
+.nav-box p{margin:0 0 18px;color:#666;font-size:14px}
+.nav-options{display:grid;gap:10px}
+.nav-option{display:flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:10px;padding:13px 16px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none}
+.nav-google{background:#1a73e8;color:#fff}
+.nav-waze{background:#33ccff;color:#082b35}
+.nav-cancel{background:#eee;color:#333}
+</style>
+
 </style>
 </head>
 <body>
@@ -251,5 +265,22 @@ copy.addEventListener('click', async () => {
 
 render();
 </script>
+
+<div class="nav-modal" id="navModal" onclick="if(event.target===this) closeNavigation()">
+  <div class="nav-box">
+    <h3 id="navTitle">Como chegar</h3>
+    <p>Escolha o aplicativo que deseja usar para navegar até este ponto.</p>
+    <div class="nav-options">
+      <a id="navGoogle" class="nav-option nav-google" target="_blank" rel="noopener">
+        📍 Abrir no Google Maps
+      </a>
+      <a id="navWaze" class="nav-option nav-waze" target="_blank" rel="noopener">
+        🚗 Abrir no Waze
+      </a>
+      <button class="nav-option nav-cancel" onclick="closeNavigation()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
