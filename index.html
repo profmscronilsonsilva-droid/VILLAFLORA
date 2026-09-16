@@ -64,6 +64,39 @@ footer{max-width:1300px;margin:auto;padding:0 16px 22px;color:var(--muted);font-
 </style>
 
 </style>
+
+<script>
+const TEST_START_LAT = -23.558217;
+const TEST_START_LNG = -47.479185;
+
+function googleRouteFromPoint(p){
+  const destination = p.google_place_id
+    ? encodeURIComponent(p.query)
+    : encodeURIComponent(p.query);
+  return 'https://www.google.com/maps/dir/?api=1'
+    + '&origin=' + TEST_START_LAT + ',' + TEST_START_LNG
+    + '&destination=' + destination
+    + (p.google_place_id ? '&destination_place_id=' + encodeURIComponent(p.google_place_id) : '');
+}
+
+function wazeRouteFromPoint(p){
+  return 'https://www.waze.com/ul?ll='
+    + encodeURIComponent(p.address || p.query)
+    + '&navigate=yes';
+}
+
+function openNavigationFromTestPoint(p){
+  const modal=document.getElementById('navModal');
+  const title=document.getElementById('navTitle');
+  const google=document.getElementById('navGoogle');
+  const waze=document.getElementById('navWaze');
+  title.textContent='Como chegar — '+p.name;
+  google.href=googleRouteFromPoint(p);
+  waze.href=navigateWaze(p);
+  modal.classList.add('show');
+}
+</script>
+
 </head>
 <body>
 <header>
@@ -280,6 +313,21 @@ render();
       <button class="nav-option nav-cancel" onclick="closeNavigation()">Cancelar</button>
     </div>
   </div>
+</div>
+
+
+<div class="legend-note route-help">
+  <b>Ponto inicial de teste:</b> -23.558217, -47.479185.
+  Ao escolher <b>Como chegar</b>, o Google Maps recebe essa coordenada como origem
+  e o ponto selecionado como destino. O Waze abre a navegação para o destino.
+</div>
+
+
+<div class="legend-note">
+  <a class="btn primary" target="_blank" rel="noopener"
+     href="https://www.google.com/maps/search/?api=1&query=-23.558217,-47.479185">
+     📍 Ver ponto inicial de teste no Google Maps
+  </a>
 </div>
 
 </body>
