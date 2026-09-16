@@ -408,11 +408,13 @@ render();
 
 <script id="modern-villa-flora-js">
 let vfSelectedPlace=null;
-const VF_ORIGIN={lat:-23.560492,lng:-47.477431};
+const VF_ORIGIN={lat:null,lng:null};
 
 function vfGoogleRoute(p, origin=VF_ORIGIN){
   const d=(p.lat!=null&&p.lng!=null)?p.lat+','+p.lng:(p.address||p.query);
-  return 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(origin.lat+','+origin.lng)+'&destination='+encodeURIComponent(d);
+  return 'https://www.google.com/maps/dir/?api=1'
+    +'&origin='+encodeURIComponent(origin.lat+','+origin.lng)
+    +'&destination='+encodeURIComponent(d);
 }
 function vfWazeRoute(p){
   const d=(p.lat!=null&&p.lng!=null)?p.lat+','+p.lng:(p.address||p.query);
@@ -423,13 +425,51 @@ function vfSelect(p){
   document.getElementById('vfSelectedName').textContent=p.name;
   document.getElementById('vfSelectedAddress').innerHTML=(p.address||p.query)+
     (p.lat!=null?'<br><b>GPS:</b> '+Number(p.lat).toFixed(7)+', '+Number(p.lng).toFixed(7):'');
-  document.getElementById('vfRouteBtn').disabled=false;
   document.querySelectorAll('.vf-item').forEach(el=>el.classList.toggle('active',Number(el.dataset.id)===p.id));
-  // Reuse original map marker interaction when available.
   if(typeof showPlace==='function') try{showPlace(p)}catch(e){}
-  // Visual origin marker is a reference point; actual navigation uses exact coordinates.
-  document.getElementById('vfOriginPin').style.display='block';
+  requestUserLocationAndChoose(p);
 }
+function requestUserLocationAndChoose(p){
+  // Tenta obter a posição atual do aparelho/navegador.
+  if(!navigator.geolocation){
+    VF_ORIGIN.lat=null; VF_ORIGIN.lng=null;
+    vfOpenChoiceWithoutOrigin(p);
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      VF_ORIGIN.lat=pos.coords.latitude;
+      VF_ORIGIN.lng=pos.coords.longitude;
+
+      const originText=document.querySelector('.vf-origin span');
+      if(originText){
+        originText.innerHTML='<b>Você está aqui:</b> '+
+          VF_ORIGIN.lat.toFixed(6)+', '+VF_ORIGIN.lng.toFixed(6);
+      }
+
+      const pin=document.getElementById('vfOriginPin');
+      if(pin) pin.style.display='block';
+
+      vfOpenChoice();
+    },
+    function(){
+      // Se o usuário negar a localização, ainda permite escolher o aplicativo.
+      vfOpenChoiceWithoutOrigin(p);
+    },
+    {enableHighAccuracy:true, timeout:10000, maximumAge:30000}
+  );
+}
+
+function vfOpenChoiceWithoutOrigin(p){
+  vfSelectedPlace=p;
+  document.getElementById('vfGoogleChoice').href=
+    'https://www.google.com/maps/search/?api=1&query='+
+    encodeURIComponent((p.lat!=null&&p.lng!=null)?p.lat+','+p.lng:(p.address||p.query));
+  document.getElementById('vfWazeChoice').href=vfWazeRoute(p);
+  document.getElementById('vfModal').classList.add('show');
+}
+
 function vfOpenChoice(){
   if(!vfSelectedPlace)return;
   document.getElementById('vfGoogleChoice').href=vfGoogleRoute(vfSelectedPlace);
@@ -440,11 +480,17 @@ function vfCloseChoice(){document.getElementById('vfModal').classList.remove('sh
 function useCurrentLocation(){
   if(!navigator.geolocation){alert('Seu navegador não oferece geolocalização.');return}
   navigator.geolocation.getCurrentPosition(pos=>{
-    VF_ORIGIN.lat=pos.coords.latitude; VF_ORIGIN.lng=pos.coords.longitude;
-    document.querySelector('.vf-origin span').innerHTML='<b>Origem:</b> '+VF_ORIGIN.lat.toFixed(6)+', '+VF_ORIGIN.lng.toFixed(6);
-    document.getElementById('vfOriginPin').style.display='block';
+    VF_ORIGIN.lat=pos.coords.latitude;
+    VF_ORIGIN.lng=pos.coords.longitude;
+    const originText=document.querySelector('.vf-origin span');
+    if(originText) originText.innerHTML='<b>Você está aqui:</b> '+
+      VF_ORIGIN.lat.toFixed(6)+', '+VF_ORIGIN.lng.toFixed(6);
+    const pin=document.getElementById('vfOriginPin');
+    if(pin) pin.style.display='block';
     if(vfSelectedPlace) vfOpenChoice();
-  },()=>alert('Não foi possível obter sua localização. Verifique a permissão do navegador.'));
+  },()=>{
+    alert('Não foi possível obter sua localização. Autorize o acesso à localização no navegador.');
+  },{enableHighAccuracy:true,timeout:10000,maximumAge:30000});
 }
 function vfBuildList(){
   const list=document.getElementById('vfList');
@@ -477,7 +523,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <div class="vf-modal" id="vfModal" onclick="if(event.target===this)vfCloseChoice()">
   <div class="vf-dialog">
     <div class="vf-dialog-head">
-      <div><h3>Como chegar</h3><p>Escolha o aplicativo para navegar até o ponto selecionado.</p></div>
+      <div><h3>Como chegar</h3><p>Origem: <b>seu local atual</b> → destino: ponto selecionado. Escolha o aplicativo.</p></div>
       <button class="vf-close" onclick="vfCloseChoice()">✕</button>
     </div>
     <a id="vfGoogleChoice" class="vf-app google" target="_blank" rel="noopener">
@@ -492,5 +538,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   </div>
 </div>
 
+<div class="legend-note gps-browser-note">
+      <b>Como funciona:</b> ao clicar em qualquer ponto, o navegador solicita sua localização.
+      Depois você escolhe <b>Google Maps</b> ou <b>Waze</b>. A sua posição atual é usada como origem
+      e a coordenada GPS do ponto selecionado como destino.
+    </div>
 </body>
 </html>
